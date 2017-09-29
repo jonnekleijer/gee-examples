@@ -55,4 +55,4 @@ while time_i.difference(stop, dt).getInfo() < 0:
     df = pd.concat([df, df_i], axis=0)
     time_i = time_i.advance(1, dt)
 
-df.to_csv(r"C:\dev\ge\output\SM\test.csv")
+df.to_csv(r"...\output\SM.csv")

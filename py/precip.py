@@ -8,6 +8,7 @@ import ee
 
 ee.Initialize()
 
+# Location = Houston
 geom = ee.Geometry.Point(-72.59765624999994, 22.816694126899844)
 zoom = 5
 start = ee.Date.fromYMD(2017, 9, 1)

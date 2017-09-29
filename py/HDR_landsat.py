@@ -1,7 +1,3 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-# Jonne Kleijer, Royal HaskoningDHV
-
 """HDR Landsat.
 Display portions of an image with different dynamic ranges.
 The land areas are displayed normally, but the water areas
@@ -13,7 +9,7 @@ import ee
 import ee.mapclient
 
 ee.Initialize()
-                     
+
 ee.mapclient.centerMap(-95.738, 18.453, 9)
 
 # Filter the LE7 collection to a single date.
