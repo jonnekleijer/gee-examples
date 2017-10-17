@@ -2,26 +2,35 @@
 # -*- coding: utf-8 -*-
 # Jonne Kleijer, Royal HaskoningDHV
 
-# TODO get download link
+# TODO: make rectangle dynamic based on point
 
 import ee
 
 ee.Initialize()
 
-# Location = Houston
-geom = ee.Geometry.Point(-72.59765624999994, 22.816694126899844)
+geom = ee.Geometry.Point(-72.59765624999994, 22.816694126899844)  # Houston
+geom = ee.Geometry.Point(-70.01483917236328, 12.502112893629409)  # Aruba
+geom = ee.Geometry.Point(-98.98321151733398, 19.504217643044573)  # Mexico
+geom = ee.Geometry.Point(-70.04949331283570, 12.597140387992132)  # Malmok
+geom = ee.Geometry.Point(46.70039176940918, 24.955635301665680)  # Riyadh
+
 zoom = 5
-start = ee.Date.fromYMD(2017, 9, 1)
-stop = ee.Date.fromYMD(2017, 9, 15)
+start = ee.Date.fromYMD(2017, 2, 10)
+stop = ee.Date.fromYMD(2017, 2, 20)
+
 palette = ['FFFFFF', 'F3F9CF', 'DDFCD8', 'B6EFC2', '79C5B0', '5CB2A7', '56A6C0', '2D85BC', '1F669C', '013AA4', '351457', '77426C']
-mini = 0  # mm
-maxi = 550  # mm
-step = 60  # miutes
+mini = 0 # mm
+maxi = 110 # mm
+step = 30  # miutes
 
 # Init
 start_str = start.format('YMMddHHmm').getInfo()
 stop_str = stop.format('YMMddHHmm').getInfo()
-geometry = ee.Geometry.Rectangle([-90, 15, -60, 30])
+geom.getInfo()['coordinates'][0]
+geometry = ee.Geometry.Rectangle([geom.getInfo()['coordinates'][0]-5, 
+                                  geom.getInfo()['coordinates'][1]-2.5, 
+                                  geom.getInfo()['coordinates'][0]+5, 
+                                  geom.getInfo()['coordinates'][1]+2.5])
 geometry = geometry['coordinates'][0]
 task_config = {
     'description': 'Image',
