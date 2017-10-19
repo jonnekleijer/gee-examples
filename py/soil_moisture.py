@@ -4,7 +4,7 @@
 
 import ee
 import pandas as pd
-
+import matplotlib.pyplot as plt
 ee.Initialize()
 
 """
@@ -13,7 +13,7 @@ Every 3 hour
 4 params for SM (e.g. 10cm, 40cm, 100cm, 200cm)
 """
 
-geom = ee.Geometry.Point(35.2, 31.9)
+geom = ee.Geometry.Point(-68.02734375, -16.720385051693988)
 start = ee.Date.fromYMD(2001, 1, 1)
 stop = ee.Date.fromYMD(2017, 6, 1)
 dt = 'month'  # year, month, week, day, hour, minute, second
@@ -55,4 +55,11 @@ while time_i.difference(stop, dt).getInfo() < 0:
     df = pd.concat([df, df_i], axis=0)
     time_i = time_i.advance(1, dt)
 
-df.to_csv(r"...\output\SM.csv")
+df.to_csv(r"..\..\output\SM\SM.csv")
+df = df.set_index('time', drop=True)
+fig = plt.figure(figsize=(16,8))
+ax = fig.add_subplot(111)
+ax.plot(df['SM000_010'])
+ax.set_xlabel('time')
+ax.set_ylabel('SM top 10 cm [kg/m^2/s]')
+fig.savefig(r'..\..\output\SM\SM010.png')
