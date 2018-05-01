@@ -3,6 +3,8 @@
 # Jonne Kleijer, Royal HaskoningDHV
 
 # TODO: timezone
+# TODO fix GPM
+
 
 import ee
 import pandas as pd
@@ -12,7 +14,7 @@ import yaml
 
 ee.Initialize()
 logging.basicConfig(level=logging.INFO)
-with open(r"..\..\input\precip_TS_aruba_TRMM.yaml", 'r') as f:
+with open(r"..\..\input\precip_TS_aruba_GPM.yaml", 'r') as f:
     kwargs = yaml.load(f)
 
 xs = kwargs['xs']
@@ -47,7 +49,7 @@ for key in xs.keys():
         imageCollection = ee.ImageCollection('NASA/GPM_L3/IMERG_V04')
         imageCollection_s = imageCollection.filter(ee.Filter.date(start, stop))
         P = imageCollection_s.select('precipitationCal')
-    elif product== 'TRMM':
+    elif product == 'TRMM':
         imageCollection = ee.ImageCollection('TRMM/3B42')
         imageCollection_s = imageCollection.filter(ee.Filter.date(start, stop))
         P = imageCollection_s.select('precipitation')
@@ -70,8 +72,8 @@ for key in xs.keys():
         if product == 'GPM':
             df_i['precipitationCal'] = df_i['precipitationCal'] / 2
         elif product == 'TRMM':
-            df_i['precipitation'] = df_i['precipitation']*3
-        df = pd.concat([df, df_i], axis=0)
+            df_i['precipitation'] = df_i['precipitation'] * 3
+            df = pd.concat([df, df_i], axis=0)
         time_i = time_i.advance(1, dt)
     df = df.reset_index(drop=True)
     try:
@@ -81,9 +83,9 @@ for key in xs.keys():
         logging.info('Warning: Write to csv failed')
     for window in windows:
         if product == 'GPM':
-            win = df.precipitationCal.rolling(window=window*2, center=False).sum()
+            win = df.precipitationCal.rolling(window=window * 2, center=False).sum()
         elif product == 'TRMM':
-            win = df.precipitation.rolling(window=int(window/3), center=False).sum()
+            win = df.precipitation.rolling(window=int(window / 3), center=False).sum()
         winMax = win.max()
         winStop = df[win == winMax].iloc[0]['time']
         winStart = winStop + timedelta(hours=-window)
@@ -107,7 +109,7 @@ for key in xs.keys():
         if tasks == True:
             task_config['description'] = 'P_{key}_{t}'.format(key=key, t=window)
             image = imageCollection.filter(ee.Filter.date(winStartGEE, winStopGEE))
-            if product== 'GPM':
+            if product == 'GPM':
                 P = imageCollection_s.select('precipitationCal')
                 image_sum = P.reduce(ee.Reducer.sum()).divide(2.)
             elif product == 'TRMM':
